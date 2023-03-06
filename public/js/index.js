@@ -20,7 +20,7 @@ const removeProductsCart = async (id) => {
 
 const addProductToCart = async (pid) => {
   /*Determinar de donde tomar el id de carrito*/
-  const cid = "6405c81c5d44bc4cf36beced";
+  const cid = "6404abdd4b3990bc50cc46b4";
 
   await fetch(`/carts/${cid}/products/${pid}`, {
     method: "POST",
