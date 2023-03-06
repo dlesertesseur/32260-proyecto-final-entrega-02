@@ -33,13 +33,13 @@ const addProductToCard = async (cid, pid, quantity) => {
   return ret;
 };
 
-const removeProductFromCard = async (cid, pid) => {
+const removeProductCart = async (cid, pid) => {
   const ret = await cartDAO.removeProduct(cid, pid);
   return ret;
 };
 
-const updateProductFromCard = async (cid, pid) => {
-  const ret = await cartDAO.updateProduct(cid, pid);
+const updateProductCart = async (cid, pid, body) => {
+  const ret = await cartDAO.updateProduct(cid, pid, body);
   return ret;
 };
 
@@ -50,6 +50,6 @@ export {
   updateCart,
   removeCart,
   addProductToCard,
-  updateProductFromCard,
-  removeProductFromCard,
+  updateProductCart,
+  removeProductCart,
 };

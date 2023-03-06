@@ -10,17 +10,26 @@
     <th>Stock</th>
     <th>Categoria</th>
     <th>Thumbnail</th>
+    <th>#Quantity</th>
   </tr>
+
   {{#each cart.products}}
     <tr>
-      <td>{{title}}</td>
-      <td>{{code}}</td>
-      <td>{{description}}</td>
-      <td>{{price}}</td>
-      <td>{{status}}</td>
-      <td>{{stock}}</td>
-      <td>{{category}}</td>
-      <td>{{thumbnail}}</td>
+      <td>{{product.title}}</td>
+      <td>{{product.code}}</td>
+      <td>{{product.description}}</td>
+      <td>{{product.price}}</td>
+      <td>{{product.status}}</td>
+      <td>{{product.stock}}</td>
+      <td>{{product.category}}</td>
+      <td>{{product.thumbnail}}</td>
+      <td>{{quantity}}</td>
+      <td>
+        <button onclick="removeProductCart('{{../cart._id}}','{{this.product._id}}')">Eliminar</button>
+      </td>
     </tr>
   {{/each}}
 </table>
+
+<script src="/js/index.js"></script>
+

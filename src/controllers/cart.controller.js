@@ -5,14 +5,13 @@ import {
   updateCart,
   removeCart,
   addProductToCard,
-  updateProductFromCard,
-  removeProductFromCard,
+  updateProductCart,
+  removeProductCart,
 } from "../services/cart.service.js";
 
 const getAll = async (req, res) => {
   try {
     const carts = await getAllCards();
-    //res.send(carts);
     res.render("carts", {
       title: "Carts",
       style: "index.css",
@@ -56,7 +55,6 @@ const findById = async (req, res) => {
   if (cid) {
     try {
       const cart = await findCardById(cid);
-
       res.render("cart", {
         title: "Cart",
         style: "index.css",
@@ -75,7 +73,7 @@ const addProduct = async (req, res) => {
   let cart = null;
   const cid = req.params.cid;
   const pid = req.params.pid;
-  const quantity = req.params.quantity;
+  const quantity = req.params.quantity ? req.params.quantity : 1;
 
   if (cid && pid) {
     try {
@@ -96,7 +94,7 @@ const removeProduct = async (req, res) => {
 
   if (cid && pid) {
     try {
-      cart = await removeProductFromCard(cid, pid);
+      cart = await removeProductCart(cid, pid);
       res.send(cart);
     } catch (error) {
       res.status(500).send({ message: error.message });
@@ -110,13 +108,16 @@ const updateProduct = async (req, res) => {
   let cart = null;
   const cid = req.params.cid;
   const pid = req.params.pid;
+  const body = req.body;
+
+  console.log("cart.controller -> updateProduct", cid, pid, body);
 
   if (cid && pid) {
     try {
-      cart = await updateProductFromCard(cid, pid);
+      cart = await updateProductCart(cid, pid, body);
       res.send(cart);
     } catch (error) {
-      res.status(500).send({ message: error.message });
+      res.status(error.code).send({ message: error.message });
     }
   } else {
     res.status(400).send({ message: "Bad request" });

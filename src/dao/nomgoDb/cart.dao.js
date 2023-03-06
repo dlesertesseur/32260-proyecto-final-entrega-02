@@ -3,16 +3,12 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 mongoose.set("strictQuery", false);
-mongoose.connect(
-  process.env.MONGO_DB_CONNECTION,
-  { dbName: "ecommerce" },
-  (error) => {
-    if (error) {
-      console.log("Cannot connect to db");
-      process.exit();
-    }
+mongoose.connect(process.env.MONGO_DB_CONNECTION, { dbName: "ecommerce" }, (error) => {
+  if (error) {
+    console.log("Cannot connect to db");
+    process.exit();
   }
-);
+});
 
 class CartDao {
   constructor(collection, schema) {
@@ -30,7 +26,7 @@ class CartDao {
 
   async findById(id) {
     try {
-      let ret = await this.collection.findById(id).populate("products").lean();
+      let ret = await this.collection.findById(id).populate("products.product").lean();
       return ret;
     } catch (error) {
       throw error;
@@ -78,11 +74,22 @@ class CartDao {
 
   async addProduct(cid, pid, quantity) {
     try {
-      let product = await this.collection.findById(cid);
+      let cart = await this.collection.findById(cid).lean();
 
-      product.products.push(pid);
+      //Busca el producto en el carrito
+      const cartItem = cart.products.find((item) => {
+        return item.product.toString() === pid;
+      });
 
-      let ret = await this.collection.findOneAndUpdate({ _id: cid }, product, {
+      if (cartItem) {
+        //Si ya esta agregado al carrito le suma la cantidad pasada
+        cartItem.quantity += quantity;
+      } else {
+        const item = { product: pid, quantity: quantity };
+        cart.products.push(item);
+      }
+
+      let ret = await this.collection.findOneAndUpdate({ _id: cid }, cart, {
         new: true,
       });
 
@@ -92,15 +99,26 @@ class CartDao {
     }
   }
 
-  async updateProduct(cid, pid) {
+  async updateProduct(cid, pid, body) {
     try {
-      let cat = await this.collection.findById(cid);
+      let ret = null;
+      let cart = await this.collection.findById(cid).lean();
 
-      cat.products.push(pid);
-
-      let ret = await this.collection.findOneAndUpdate({ _id: cid }, cat, {
-        new: true,
+      //Busca el producto en el carrito
+      const cartItem = cart.products.find((item) => {
+        return item.product.toString() === pid;
       });
+
+      if (cartItem) {
+        //Si existe, asigna la cantidad pasada.
+        cartItem.quantity = body.quantity;
+
+        ret = await this.collection.findOneAndUpdate({ _id: cid }, cart, {
+          new: true,
+        });
+      } else {
+        throw { code: 404, message: `Product id: ${pid} Not Found` };
+      }
 
       return ret;
     } catch (error) {
@@ -110,16 +128,22 @@ class CartDao {
 
   async removeProduct(cid, pid) {
     try {
-      let cat = await this.collection.findById(cid);
+      let ret = null;
+      let cart = await this.collection.findById(cid).lean();
 
-      let index = cat.products.indexOf(pid);
-      if (index > -1) {
-        cat.products.splice(index, 1);
-      }
-
-      let ret = await this.collection.findOneAndUpdate({ _id: cid }, cat, {
-        new: true,
+      //Busca el producto en el carrito
+      const items = cart.products.filter((item) => {
+        return item.product.toString() !== pid;
       });
+
+      if (items) {
+        cart.products = items;
+        ret = await this.collection.findOneAndUpdate({ _id: cid }, cart, {
+          new: true,
+        });
+      } else {
+        throw { code: 404, message: `Product id: ${pid} Not Found` };
+      }
 
       return ret;
     } catch (error) {

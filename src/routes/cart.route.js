@@ -22,10 +22,10 @@ cartRoute.put("/:cid/", update);
 
 cartRoute.delete("/:cid", remove);
 
-cartRoute.post("/:cid/product/:pid", addProduct);
+cartRoute.post("/:cid/products/:pid", addProduct);
 
-cartRoute.delete("/:cid/product/:pid", removeProduct);
+cartRoute.delete("/:cid/products/:pid", removeProduct);
 
-cartRoute.put("/:cid/product/:pid", updateProduct);
+cartRoute.put("/:cid/products/:pid", updateProduct);
 
 export default cartRoute;
