@@ -1,0 +1,42 @@
+<h2>Lista de produtos</h2>
+
+<table>
+  <tr>
+    <th>Titulo</th>
+    <th>Codigo</th>
+    <th>Descripcion</th>
+    <th>Precio</th>
+    <th>Estado</th>
+    <th>Stock</th>
+    <th>Categoria</th>
+    <th>Thumbnail</th>
+  </tr>
+  {{#each data.payload}}
+    <tr>
+      <td>{{title}}</td>
+      <td>{{code}}</td>
+      <td>{{description}}</td>
+      <td>{{price}}</td>
+      <td>{{status}}</td>
+      <td>{{stock}}</td>
+      <td>{{category}}</td>
+      <td>{{thumbnail}}</td>
+      <td>
+        <button onclick="addProductToCart('{{this._id}}')">Agregar producto</button>
+      </td>
+    </tr>
+  {{/each}}
+</table>
+
+<div style="margin-top:10px;">
+
+  {{#if data.hasPrevPage}}
+    <a href={{data.prevLink}} style="margin-right:10px;"> Pagina anterior </a>
+  {{/if}}
+
+  {{#if data.hasNextPage}}
+    <a href={{data.nextLink}}> Pagina siguiente</a>
+  {{/if}}
+</div>
+
+<script src="/js/index.js"></script>
