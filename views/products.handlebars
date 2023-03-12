@@ -1,3 +1,13 @@
+<div style="font-size:30px;">Bienvenido:
+  {{params.user.first_name}}
+  {{params.user.last_name}}</div>
+<div style="font-size:24px; margin-top:10px">Rol: {{params.user.role}}</div>
+<div style="font-size:14px; margin-top:15px">email: {{params.user.email}}</div>
+<div style="font-size:14px; margin-top:5px">Edad: {{params.user.age}}</div>
+<div style="margin-top:10px">
+  <button onclick="logout()">Logout</button>
+</div>
+<br />
 <h2>Lista de produtos</h2>
 
 <table>
@@ -11,7 +21,7 @@
     <th>Categoria</th>
     <th>Thumbnail</th>
   </tr>
-  {{#each data.payload}}
+  {{#each params.data.payload}}
     <tr>
       <td>{{title}}</td>
       <td>{{code}}</td>
@@ -22,7 +32,7 @@
       <td>{{category}}</td>
       <td>{{thumbnail}}</td>
       <td>
-        <button onclick="addProductToCart('{{this._id}}')">Agregar producto</button>
+        <button onclick="addProductToCart('{{../params.user.cid}}','{{this._id}}')">Agregar producto</button>
       </td>
     </tr>
   {{/each}}
@@ -30,12 +40,14 @@
 
 <div style="margin-top:10px;">
 
-  {{#if data.hasPrevPage}}
-    <a href={{data.prevLink}} style="margin-right:10px;"> Pagina anterior </a>
+  {{#if params.data.hasPrevPage}}
+    <a href={{params.data.prevLink}} style="margin-right:10px;">
+      Pagina anterior
+    </a>
   {{/if}}
 
-  {{#if data.hasNextPage}}
-    <a href={{data.nextLink}}> Pagina siguiente</a>
+  {{#if params.data.hasNextPage}}
+    <a href={{params.data.nextLink}}> Pagina siguiente</a>
   {{/if}}
 </div>
 

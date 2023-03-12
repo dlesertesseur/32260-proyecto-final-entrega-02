@@ -31,8 +31,10 @@ class ProductDao {
     };
 
     const queryParams = query
-      ? { category: query, stock: { $gt: 0 } }
-      : { stock: { $gt: 0 } };
+        ? { category: query, stock: { $gt: 0 } }
+        : { stock: { $gt: 0 } };
+
+    const queryValue = query ? `&query=${query}` : "";
 
     try {
       const pagination = await this.collection.paginate(queryParams, options);
@@ -47,10 +49,10 @@ class ProductDao {
         hasPrevPage: pagination.hasPrevPage,
         hasNextPage: pagination.hasNextPage,
         prevLink: pagination.hasPrevPage
-          ? `/products?limit=${limit}&page=${pagination.prevPage}&sort=${sort}&query=${queryParams}`
+          ? `api/products/list?limit=${limit}&page=${pagination.prevPage}&sort=${sort}${queryValue}`
           : null,
         nextLink: pagination.hasNextPage
-          ? `/products?limit=${limit}&page=${pagination.nextPage}&sort=${sort}&query=${queryParams}`
+          ? `api/products/list?limit=${limit}&page=${pagination.nextPage}&sort=${sort}${queryValue}`
           : null,
       };
 

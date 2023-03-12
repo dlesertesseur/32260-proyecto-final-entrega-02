@@ -1,10 +1,10 @@
 const inspectCart = async (id) => {
-  console.log(`/carts/${id}`);
-  location.href = `/carts/${id}`;
+  console.log(`/api/carts/${id}`);
+  location.href = `/api/carts/${id}`;
 };
 
 const removeProductsCart = async (id) => {
-  await fetch(`/carts/${id}`, {
+  await fetch(`/api/carts/${id}`, {
     method: "DELETE",
     mode: "cors",
     cache: "no-cache",
@@ -18,11 +18,8 @@ const removeProductsCart = async (id) => {
     });
 };
 
-const addProductToCart = async (pid) => {
-  /*Determinar de donde tomar el id de carrito*/
-  const cid = "6404abdd4b3990bc50cc46b4";
-
-  await fetch(`/carts/${cid}/products/${pid}`, {
+const addProductToCart = async (cid, pid) => {
+  await fetch(`/api/carts/${cid}/products/${pid}`, {
     method: "POST",
     mode: "cors",
     cache: "no-cache",
@@ -32,12 +29,12 @@ const addProductToCart = async (pid) => {
   })
     .then((res) => res.json())
     .then((data) => {
-      location.reload();
+      location.assign(`/api/carts/${cid}`);
     });
 };
 
 const removeProductCart = async (cid, pid) => {
-  await fetch(`/carts/${cid}/products/${pid}`, {
+  await fetch(`/api/carts/${cid}/products/${pid}`, {
     method: "DELETE",
     mode: "cors",
     cache: "no-cache",
@@ -49,4 +46,12 @@ const removeProductCart = async (cid, pid) => {
     .then((data) => {
       location.reload();
     });
+};
+
+const toRegister = () => {
+  location.replace("/api/auth/register");
+};
+
+const logout = () => {
+  location.replace("/api/auth/logout");
 };

@@ -13,6 +13,11 @@ const findCardById = async (id) => {
   return ret;
 };
 
+const findCardByUserId = async (uid) => {
+  const ret = await cartDAO.findByUserId(uid);
+  return ret;
+};
+
 const insertCart = async (id) => {
   const ret = await cartDAO.insert(id);
   return ret;
@@ -23,8 +28,8 @@ const updateCart = async (id, body) => {
   return ret;
 };
 
-const removeCart = async (id) => {
-  const ret = await cartDAO.remove(id);
+const removeCart = async (cid) => {
+  const ret = await cartDAO.remove(cid);
   return ret;
 };
 
@@ -46,6 +51,7 @@ const updateProductCart = async (cid, pid, body) => {
 export {
   getAllCards,
   findCardById,
+  findCardByUserId,
   insertCart,
   updateCart,
   removeCart,

@@ -8,8 +8,9 @@ import {
   updateProductCart,
   removeProductCart,
 } from "../services/cart.service.js";
+import { findByEmail } from "../services/user.service.js";
 
-const getAll = async (req, res) => {
+const getCartsList = async (req, res) => {
   try {
     const carts = await getAllCards();
     res.render("carts", {
@@ -22,9 +23,23 @@ const getAll = async (req, res) => {
   }
 };
 
+const getAll = async (req, res) => {
+  try {
+    const carts = await getAllCards();
+    res.send(carts);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
 const insert = async (req, res) => {
   try {
-    const cart = await insertCart(req.body);
+    const user = await findByEmail(req.session.email);
+    const newCart = {...req.body};
+
+    newCart.user = user.id;
+
+    const cart = await insertCart(newCart);
     res.send(cart);
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -42,11 +57,16 @@ const update = async (req, res) => {
 };
 
 const remove = async (req, res) => {
-  try {
-    const cart = await removeCart(req.body);
-    res.send(cart);
-  } catch (error) {
-    res.status(500).send({ message: error.message });
+  const cid = req.params.cid;
+  if (cid) {
+    try {
+      const cart = await removeCart(cid);
+      res.send(cart);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  } else {
+    res.status(400).send({ message: "Bad request" });
   }
 };
 
@@ -60,7 +80,6 @@ const findById = async (req, res) => {
         style: "index.css",
         cart,
       });
-
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
@@ -133,4 +152,5 @@ export {
   addProduct,
   removeProduct,
   updateProduct,
+  getCartsList,
 };

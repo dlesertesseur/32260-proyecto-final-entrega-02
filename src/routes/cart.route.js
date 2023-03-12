@@ -7,25 +7,24 @@ import {
   addProduct,
   removeProduct,
   updateProduct,
+  getCartsList,
 } from "../controllers/cart.controller.js";
 import { Router } from "express";
+import { isAuthenticated } from "../middlewares/index.js";
 
 const cartRoute = Router();
 
-cartRoute.get("/", getAll);
+cartRoute.get("/", isAuthenticated, getAll);
+cartRoute.get("/list", isAuthenticated, getCartsList);
+cartRoute.get("/:cid", isAuthenticated, findById);
 
-cartRoute.get("/:cid", findById);
+cartRoute.post("/", isAuthenticated, insert);
+cartRoute.post("/:cid/products/:pid", isAuthenticated, addProduct);
 
-cartRoute.post("/", insert);
+cartRoute.put("/:cid/", isAuthenticated, update);
+cartRoute.put("/:cid/products/:pid", isAuthenticated, updateProduct);
 
-cartRoute.put("/:cid/", update);
-
-cartRoute.delete("/:cid", remove);
-
-cartRoute.post("/:cid/products/:pid", addProduct);
-
-cartRoute.delete("/:cid/products/:pid", removeProduct);
-
-cartRoute.put("/:cid/products/:pid", updateProduct);
+cartRoute.delete("/:cid", isAuthenticated, remove);
+cartRoute.delete("/:cid/products/:pid", isAuthenticated, removeProduct);
 
 export default cartRoute;

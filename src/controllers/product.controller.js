@@ -14,13 +14,36 @@ const getAll = async (req, res) => {
 
   try {
     const data = await getAllProducts(limit, page, sort, query);
+    res.send(data);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
 
+const getProductsList = async (req, res) => {
+  const limit = req.query.limit;
+  const page = req.query.page;
+  const sort = req.query.sort;
+  const query = req.query.query;
+
+  try {
+    const data = await getAllProducts(limit, page, sort, query);
+    const userData = {
+      first_name: req.session.first_name,
+      last_name: req.session.last_name,
+      email: req.session.email,
+      age: req.session.age,
+      role: req.session.role,
+      cid :req.session.cid,
+    };
+
+    const params = {data: data, user: userData};
+    
     res.render("products", {
       title: "Products",
       style: "index.css",
-      data,
+      params,
     });
-    
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
@@ -75,6 +98,5 @@ const remove = async (req, res) => {
   } else {
     res.status(400).send({ message: "Bad request" });
   }
-
 };
-export { getAll, findById, update, insert, remove };
+export { getAll, findById, update, insert, remove, getProductsList };

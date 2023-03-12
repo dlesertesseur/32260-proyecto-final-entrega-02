@@ -4,19 +4,22 @@ import {
   update,
   insert,
   remove,
+  getProductsList,
 } from "../controllers/product.controller.js";
 import { Router } from "express";
+import { isAuthenticated } from "../middlewares/index.js";
 
 const productRoute = Router();
 
-productRoute.get("/", getAll);
+productRoute.get("/", isAuthenticated, getAll);
+productRoute.get("/list", isAuthenticated, getProductsList);
 
-productRoute.get("/:pid", findById);
+productRoute.get("/:pid", isAuthenticated, findById);
 
-productRoute.post("/", insert);
+productRoute.post("/", isAuthenticated, insert);
 
-productRoute.put("/:pid", update);
+productRoute.put("/:pid", isAuthenticated, update);
 
-productRoute.delete("/:pid", remove);
+productRoute.delete("/:pid", isAuthenticated, remove);
 
 export default productRoute;
