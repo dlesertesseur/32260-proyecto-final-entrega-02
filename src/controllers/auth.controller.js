@@ -1,6 +1,7 @@
 import { authenticate, registerUser } from "../services/auth.service.js";
 import { findCardByUserId, insertCart } from "../services/cart.service.js";
 import { createHash } from "../util/Crypt.js";
+import { getRoleByUser } from "../util/RoleValidator.js";
 
 const login = async (req, res) => {
   try {
@@ -14,26 +15,52 @@ const login = async (req, res) => {
     /*caso contrario crea uno */
     let cart = await findCardByUserId(user.id);
 
-    if(!cart){
+    if (!cart) {
       const newCart = {
-        user: user.id
+        user: user.id,
       };
       cart = await insertCart(newCart);
     }
 
-    req.session.cid = cart._id
+    req.session.cid = cart._id;
 
     /*Validacion de rol*/
-    if(req.body.email === "adminCoder@coder.com" && req.body.password === "adminCod3r123"){
-      req.session.role = "admin";
-    }else{
-      req.session.role = "user";
-    }
+    req.session.role = getRoleByUser(req.body);
 
     res.redirect("../../api/products/list");
   } catch (error) {
-    //res.status(error.status).send(error);
-    res.render('login-error', { error })
+    res.render("login-error", { error });
+  }
+};
+
+const loginPassport = async (req, res) => {
+  try {
+    const user = req.user;
+
+    req.session.email = user.email;
+    req.session.first_name = user.first_name;
+    req.session.last_name = user.last_name;
+    req.session.age = user.age;
+
+    /*Verifica si existe un carrito para el ususario */
+    /*caso contrario crea uno */
+    let cart = await findCardByUserId(user.id);
+
+    if (!cart) {
+      const newCart = {
+        user: user.id,
+      };
+      cart = await insertCart(newCart);
+    }
+
+    req.session.cid = cart._id;
+
+    /*Validacion de rol*/
+    req.session.role = getRoleByUser(req.body);
+
+    res.redirect("../../api/products/list");
+  } catch (error) {
+    res.render("login-error", { error });
   }
 };
 
@@ -42,11 +69,19 @@ const register = async (req, res) => {
     const newUser = { ...req.body };
     newUser.password = createHash(newUser.password);
 
-    const user = await registerUser(newUser);
+    await registerUser(newUser);
     res.redirect("/api/auth/login");
   } catch (error) {
     //res.status(error.status).send({ message: error.message });
-    res.render('register-error', { error })
+    res.render("register-error", { error });
+  }
+};
+
+const registerPassport = async (req, res) => {
+  try {
+    res.redirect("/api/auth/login");
+  } catch (error) {
+    res.render("register-error", { error });
   }
 };
 
@@ -78,4 +113,4 @@ const logout = (req, res) => {
   });
 };
 
-export { register, login, registerPage, loginPage, logout };
+export { register, login, registerPage, loginPage, logout, loginPassport, registerPassport };

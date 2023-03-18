@@ -2,11 +2,14 @@ import * as dotenv from "dotenv";
 import express from 'express';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
+import passport from 'passport'
 import hbs from 'express-handlebars';
 import authRoute from "./routes/auth.route.js";
 import cartRoute from "./routes/cart.route.js";
 import categoryRoute from "./routes/categories.route.js";
 import productRoute from "./routes/products.route.js";
+import sessionsRouter from "./routes/session.route.js";
+import initializePassport from "./config/passport.config.js";
 
 dotenv.config();
 const PORT = process.env.HTTP_PORT || 8080;
@@ -32,15 +35,21 @@ app.use(session({
   saveUninitialized: false
 }))
 
+/*Inicializa la configuracion de passport */
+initializePassport();
+
 app.engine("handlebars", hbs.engine());
 app.set("view engine", "handlebars");
 app.set("views", "./views");
 
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/api/auth', authRoute);
 app.use('/api/carts', cartRoute);
 app.use('/api/products', productRoute);
 app.use('/api/categories', categoryRoute);
+app.use("/api/sessions", sessionsRouter);
 
 app.use('/', (req, res) => {res.redirect("/api/auth/login")});
 

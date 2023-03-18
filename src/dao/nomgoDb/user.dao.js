@@ -43,8 +43,9 @@ class UserDao {
   }
 
   async findByEmail(email) {
+
     try {
-      let ret = await this.collection.findOne({ email: email });
+      let ret = await this.collection.findOne({ email: email }).lean();
       return ret;
     } catch (error) {
       throw error;

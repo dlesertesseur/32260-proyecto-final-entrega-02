@@ -48,6 +48,10 @@ const removeProductCart = async (cid, pid) => {
     });
 };
 
+const toGithubLogin = () => {
+  location.replace("/api/sessions/github");
+};
+
 const toRegister = () => {
   location.replace("/api/auth/register");
 };
