@@ -26,19 +26,19 @@ authRoute.post(
   registerPassport
 );
 
-authRoute.get("/registerError", (error) => {
-  console.log("registerError -> ", error);
+authRoute.get("/registerError", (req, res) => {
+  console.log("registerError -> ", req);
   res.render("register-error", { error });
 });
 
 authRoute.post(
   "/login",
-  passport.authenticate("login", { failureRedirect: "/loginError" }),
+  passport.authenticate("local", { failureRedirect: "loginError" }),
   loginPassport
 );
 
-authRoute.get("/loginError", (error) => {
-  console.log("loginError -> ", error);
-  res.render("login-error", { error });
+authRoute.get("/loginError", (req, res) => {
+  const err =  {message : req.flash('loginMessage')};
+  res.render("login-error", {err});
 });
 export default authRoute;

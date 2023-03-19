@@ -2,7 +2,8 @@ import * as dotenv from "dotenv";
 import express from 'express';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
-import passport from 'passport'
+import passport from 'passport';
+import flash from 'express-flash';
 import hbs from 'express-handlebars';
 import authRoute from "./routes/auth.route.js";
 import cartRoute from "./routes/cart.route.js";
@@ -25,6 +26,7 @@ const mongoStore = MongoStore.create({
 })
 
 const app = express();
+app.use(flash());
 app.use(express.json());
 app.use(express.static("public"));
 app.use(express.urlencoded({extended: true}));
@@ -56,4 +58,4 @@ app.use('/', (req, res) => {res.redirect("/api/auth/login")});
 const httpServer = app.listen(PORT, () => {
   console.log(`Server running on port: ${httpServer.address().port}`);
 });
-httpServer.on("error", (error) => console.log(error));
+httpServer.on("error", (error) => console.log("Server error -> ", error));

@@ -17,8 +17,12 @@ const initializePassport = () => {
   });
 
   passport.deserializeUser(async (email, done) => {
-    let user = await findByEmail(email);
-    done(null, user);
+    try {
+      const user = await findByEmail(email);
+      done(null, user);
+    } catch (error) {
+      done(error);
+    }
   });
 
   passport.use(
@@ -40,7 +44,7 @@ const initializePassport = () => {
               last_name: profile._json.login,
               age: 18,
               email: profile.emails[0].value,
-              password: "123",
+              password: createHash("123")
             };
 
             let result = await registerUser(newUser);
@@ -75,10 +79,9 @@ passport.use(
 );
 
 passport.use(
-  "login",
   new LocalStrategy(
-    { usernameField: "email" },
-    async (username, password, done) => {
+    { usernameField: "email" , passReqToCallback: true},
+    async ( req, username, password, done) => {
       try {
         const user = await authenticate({
           email: username,
@@ -87,9 +90,10 @@ passport.use(
 
         done(null, user);
       } catch (error) {
-        done(error);
+        done(null, false, req.flash('loginMessage', error.message))
       }
     }
   )
 );
+
 export default initializePassport;
