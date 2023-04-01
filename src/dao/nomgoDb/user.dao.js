@@ -97,6 +97,15 @@ class UserDao {
     }
   }
 
+  async findById(id) {
+    try {
+      let ret = await this.collection.findById(id).populate("cart").lean();
+      return ret;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async register(user) {
     try {
       let userFound = await this.findByEmail(user.email);

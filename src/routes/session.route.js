@@ -2,11 +2,11 @@ import passport from 'passport';
 import { Router } from 'express';
 import { getRoleByUser } from '../util/RoleValidator.js';
 
-const sessionsRouter = Router();
+const sessionsRoute = Router();
 
-sessionsRouter.get('/github', passport.authenticate('github', {scope: ['user:email']}), async(req, res) => {})
+sessionsRoute.get('/github', passport.authenticate('github', {scope: ['user:email']}), async(req, res) => {})
 
-sessionsRouter.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}), async (req, res) => {
+sessionsRoute.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}), async (req, res) => {
     const user = req.user;
 
     req.session.email = user.email;
@@ -18,4 +18,12 @@ sessionsRouter.get('/githubcallback', passport.authenticate('github', {failureRe
     res.redirect('/')
 })
 
-export default sessionsRouter;
+sessionsRoute.get(
+    "/current",
+    passport.authenticate("current", { session: false }),
+    async (req, res) => {
+      res.send(req.user);
+    }
+  );
+
+export default sessionsRoute;

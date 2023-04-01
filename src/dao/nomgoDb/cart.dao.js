@@ -33,15 +33,6 @@ class CartDao {
     }
   }
 
-  async findByUserId(uid) {
-    try {
-      let cart = await this.collection.findOne({user:uid}).lean();
-      return cart;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async insert(cart) {
     try {
       let ret = await this.collection.create(cart);

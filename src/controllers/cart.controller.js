@@ -8,7 +8,7 @@ import {
   updateProductCart,
   removeProductCart,
 } from "../services/cart.service.js";
-import { findByEmail } from "../services/user.service.js";
+import { findUserById } from "../services/user.service.js";
 
 const getCartsList = async (req, res) => {
   try {
@@ -34,12 +34,14 @@ const getAll = async (req, res) => {
 
 const insert = async (req, res) => {
   try {
-    const user = await findByEmail(req.session.email);
-    const newCart = {...req.body};
 
-    newCart.user = user.id;
-
+    console.log("cart. controller -> insert user id", req.user.id);
+    const newCart = { ...req.body };
     const cart = await insertCart(newCart);
+
+    const user = await findUserById(req.user.id);
+    user.cart = cart;
+
     res.send(cart);
   } catch (error) {
     res.status(500).send({ message: error.message });

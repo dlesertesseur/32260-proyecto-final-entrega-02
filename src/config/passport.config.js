@@ -2,6 +2,7 @@ import * as dotenv from "dotenv";
 import passport from "passport";
 import GithubStrategy from "passport-github2";
 import local from "passport-local";
+import jwt from "passport-jwt";
 
 import { authenticate, registerUser } from "../services/auth.service.js";
 import { findByEmail } from "../services/user.service.js";
@@ -10,6 +11,8 @@ import { createHash } from "../util/Crypt.js";
 dotenv.config();
 
 const LocalStrategy = local.Strategy;
+const JWTStrategy = jwt.Strategy;
+const ExtractJWT = jwt.ExtractJwt;
 
 const initializePassport = () => {
   passport.serializeUser((user, done) => {
@@ -44,7 +47,7 @@ const initializePassport = () => {
               last_name: profile._json.login,
               age: 18,
               email: profile.emails[0].value,
-              password: createHash("123")
+              password: createHash("123"),
             };
 
             let result = await registerUser(newUser);
@@ -54,6 +57,32 @@ const initializePassport = () => {
           }
         } catch (error) {
           done(error);
+        }
+      }
+    )
+  );
+
+  const cookieExtractor = (req) =>{
+    let token = null;
+    if (req && req.cookies) {
+      token = req.cookies["authToken"];
+    }
+    return(token);
+  }
+
+  passport.use(
+    "current",
+    new JWTStrategy(
+      {
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+        secretOrKey: process.env.SESSION_SECRET,
+      },
+      async (jwt_payload, done) => {
+        try {
+          return done(null, jwt_payload);
+        } catch (error) {
+          console.log("JWTStrategy -> error", error)
+          return done(error);
         }
       }
     )
@@ -80,8 +109,8 @@ passport.use(
 
 passport.use(
   new LocalStrategy(
-    { usernameField: "email" , passReqToCallback: true},
-    async ( req, username, password, done) => {
+    { usernameField: "email", passReqToCallback: true },
+    async (req, username, password, done) => {
       try {
         const user = await authenticate({
           email: username,
@@ -90,7 +119,7 @@ passport.use(
 
         done(null, user);
       } catch (error) {
-        done(null, false, req.flash('loginMessage', error.message))
+        done(null, false, req.flash("loginMessage", error.message));
       }
     }
   )

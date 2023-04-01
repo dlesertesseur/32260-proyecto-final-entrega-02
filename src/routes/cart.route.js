@@ -1,3 +1,4 @@
+import passport from "passport";
 import {
   getAll,
   findById,
@@ -10,21 +11,20 @@ import {
   getCartsList,
 } from "../controllers/cart.controller.js";
 import { Router } from "express";
-import { isAuthenticated } from "../middlewares/index.js";
 
 const cartRoute = Router();
 
-cartRoute.get("/", isAuthenticated, getAll);
-cartRoute.get("/list", isAuthenticated, getCartsList);
-cartRoute.get("/:cid", isAuthenticated, findById);
+cartRoute.get("/", passport.authenticate("current", { session: false }), getAll);
+cartRoute.get("/list", passport.authenticate("current", { session: false }), getCartsList);
+cartRoute.get("/:cid", passport.authenticate("current", { session: false }), findById);
 
-cartRoute.post("/", isAuthenticated, insert);
-cartRoute.post("/:cid/products/:pid", isAuthenticated, addProduct);
+cartRoute.post("/", passport.authenticate("current", { session: false }), insert);
+cartRoute.post("/:cid/products/:pid", passport.authenticate("current", { session: false }), addProduct);
 
-cartRoute.put("/:cid/", isAuthenticated, update);
-cartRoute.put("/:cid/products/:pid", isAuthenticated, updateProduct);
+cartRoute.put("/:cid/", passport.authenticate("current", { session: false }), update);
+cartRoute.put("/:cid/products/:pid", passport.authenticate("current", { session: false }), updateProduct);
 
-cartRoute.delete("/:cid", isAuthenticated, remove);
-cartRoute.delete("/:cid/products/:pid", isAuthenticated, removeProduct);
+cartRoute.delete("/:cid", passport.authenticate("current", { session: false }), remove);
+cartRoute.delete("/:cid/products/:pid", passport.authenticate("current", { session: false }), removeProduct);
 
 export default cartRoute;

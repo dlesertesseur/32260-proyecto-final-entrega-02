@@ -1,3 +1,4 @@
+import passport from "passport";
 import {
   getAll,
   findById,
@@ -7,19 +8,42 @@ import {
   getProductsList,
 } from "../controllers/product.controller.js";
 import { Router } from "express";
-import { isAuthenticated } from "../middlewares/index.js";
 
 const productRoute = Router();
 
-productRoute.get("/", isAuthenticated, getAll);
-productRoute.get("/list", isAuthenticated, getProductsList);
+productRoute.get(
+  "/",
+  passport.authenticate("current", { session: false }),
+  getAll
+);
+productRoute.get(
+  "/list",
+  passport.authenticate("current", { session: false }),
+  getProductsList
+);
 
-productRoute.get("/:pid", isAuthenticated, findById);
+productRoute.get(
+  "/:pid",
+  passport.authenticate("current", { session: false }),
+  findById
+);
 
-productRoute.post("/", isAuthenticated, insert);
+productRoute.post(
+  "/",
+  passport.authenticate("current", { session: false }),
+  insert
+);
 
-productRoute.put("/:pid", isAuthenticated, update);
+productRoute.put(
+  "/:pid",
+  passport.authenticate("current", { session: false }),
+  update
+);
 
-productRoute.delete("/:pid", isAuthenticated, remove);
+productRoute.delete(
+  "/:pid",
+  passport.authenticate("current", { session: false }),
+  remove
+);
 
 export default productRoute;

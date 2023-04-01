@@ -9,8 +9,10 @@ import authRoute from "./routes/auth.route.js";
 import cartRoute from "./routes/cart.route.js";
 import categoryRoute from "./routes/categories.route.js";
 import productRoute from "./routes/products.route.js";
-import sessionsRouter from "./routes/session.route.js";
+import sessionsRoute from "./routes/session.route.js";
 import initializePassport from "./config/passport.config.js";
+import userRoute from "./routes/user.route.js";
+import cookieParser from "cookie-parser"
 
 dotenv.config();
 const PORT = process.env.HTTP_PORT || 8080;
@@ -37,6 +39,8 @@ app.use(session({
   saveUninitialized: false
 }))
 
+app.use(cookieParser());
+
 /*Inicializa la configuracion de passport */
 initializePassport();
 
@@ -45,13 +49,14 @@ app.set("view engine", "handlebars");
 app.set("views", "./views");
 
 app.use(passport.initialize());
-app.use(passport.session());
+//app.use(passport.session());
 
 app.use('/api/auth', authRoute);
 app.use('/api/carts', cartRoute);
 app.use('/api/products', productRoute);
 app.use('/api/categories', categoryRoute);
-app.use("/api/sessions", sessionsRouter);
+app.use("/api/sessions", sessionsRoute);
+app.use("/api/user", userRoute);
 
 app.use('/', (req, res) => {res.redirect("/api/auth/login")});
 

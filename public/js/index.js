@@ -59,3 +59,18 @@ const toRegister = () => {
 const logout = () => {
   location.replace("/api/auth/logout");
 };
+
+const createCart = async ( uid ) => {
+  await fetch(`/api/user/addCart/${uid}`, {
+    method: "PUT",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      location.reload();
+    });
+};

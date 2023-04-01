@@ -1,7 +1,7 @@
 import { authenticate, registerUser } from "../services/auth.service.js";
-import { findCardByUserId, insertCart } from "../services/cart.service.js";
 import { createHash } from "../util/Crypt.js";
 import { getRoleByUser } from "../util/RoleValidator.js";
+import { generateAuthToken } from "../util/jwt.js";
 
 const login = async (req, res) => {
   try {
@@ -10,19 +10,6 @@ const login = async (req, res) => {
     req.session.first_name = user.first_name;
     req.session.last_name = user.last_name;
     req.session.age = user.age;
-
-    /*Verifica si existe un carrito para el ususario */
-    /*caso contrario crea uno */
-    let cart = await findCardByUserId(user.id);
-
-    if (!cart) {
-      const newCart = {
-        user: user.id,
-      };
-      cart = await insertCart(newCart);
-    }
-
-    req.session.cid = cart._id;
 
     /*Validacion de rol*/
     req.session.role = getRoleByUser(req.body);
@@ -37,33 +24,21 @@ const loginPassport = async (req, res) => {
   try {
     const user = req.user;
 
-    req.session.email = user.email;
-    req.session.first_name = user.first_name;
-    req.session.last_name = user.last_name;
-    req.session.age = user.age;
-  
-    /*Verifica si existe un carrito para el ususario */
-    /*caso contrario crea uno */
-    let cart = await findCardByUserId(user.id);
-  
-    if (!cart) {
-      const newCart = {
-        user: user.id,
-      };
-      cart = await insertCart(newCart);
-    }
-  
-    req.session.cid = cart._id;
-  
-    /*Validacion de rol*/
-    req.session.role = getRoleByUser(req.body);
+    const accessToken = generateAuthToken({
+      id: user._id,
+      email: user.email,
+      last_name: user.last_name,
+      first_name: user.first_name,
+      cid : user.cart?._id
+    });
 
-    res.redirect("../../api/products/list");
+    res
+      .cookie("authToken", accessToken, { httpOnly: true })
+      .redirect("../../api/products/list");
   } catch (error) {
     console.log("loginPassport -> ", error);
-    throw(error)
+    throw error;
   }
-
 };
 
 const register = async (req, res) => {
@@ -110,9 +85,11 @@ const registerPage = async (req, res) => {
 };
 
 const logout = (req, res) => {
-  req.session.destroy((error) => {
-    res.redirect("/api/auth/login");
-  });
+  // req.session.destroy((error) => {
+  //   res.redirect("/api/auth/login");
+  // });
+  res.clearCookie("authToken");
+  res.redirect("/api/auth/login");
 };
 
 export {

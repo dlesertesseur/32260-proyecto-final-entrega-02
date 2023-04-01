@@ -13,8 +13,8 @@ import passport from "passport";
 
 const authRoute = Router();
 
-authRoute.get("/login", sessionValidation, loginPage);
-authRoute.get("/register", sessionValidation, registerPage);
+authRoute.get("/login", loginPage);
+authRoute.get("/register", registerPage);
 authRoute.get("/logout", logout);
 
 // authRoute.post("/login", sessionValidation, login);

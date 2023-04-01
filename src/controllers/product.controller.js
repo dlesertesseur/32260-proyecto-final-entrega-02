@@ -5,6 +5,7 @@ import {
   updateProduct,
   deleteProduct,
 } from "../services/product.service.js";
+import { findByEmail } from "../services/user.service.js";
 
 const getAll = async (req, res) => {
   const limit = req.query.limit;
@@ -28,13 +29,17 @@ const getProductsList = async (req, res) => {
 
   try {
     const data = await getAllProducts(limit, page, sort, query);
+
+    const user = await findByEmail(req.user.email);
+    
     const userData = {
-      first_name: req.session.first_name,
-      last_name: req.session.last_name,
-      email: req.session.email,
-      age: req.session.age,
-      role: req.session.role,
-      cid :req.session.cid,
+      id: user._id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      age: user.age,
+      role: user.role,
+      cid: user?.cart?._id
     };
 
     const params = {data: data, user: userData};
