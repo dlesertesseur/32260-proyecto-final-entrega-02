@@ -22,13 +22,14 @@ authRoute.get("/logout", logout);
 
 authRoute.post(
   "/register",
-  passport.authenticate("register", { failureRedirect: "/registerError" }),
+  passport.authenticate("register", { failureRedirect: "registerError" }),
   registerPassport
 );
 
 authRoute.get("/registerError", (req, res) => {
-  console.log("registerError -> ", req);
-  res.render("register-error", { error });
+  const err =  {message : req.flash('registerMessage')};
+  res.render("register-error", { err });
+
 });
 
 authRoute.post(

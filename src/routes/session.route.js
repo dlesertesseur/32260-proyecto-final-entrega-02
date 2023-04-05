@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Router } from 'express';
 import { getRoleByUser } from '../util/RoleValidator.js';
+import { generateAuthToken } from '../util/jwt.js';
 
 const sessionsRoute = Router();
 
@@ -9,11 +10,17 @@ sessionsRoute.get('/github', passport.authenticate('github', {scope: ['user:emai
 sessionsRoute.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}), async (req, res) => {
     const user = req.user;
 
-    req.session.email = user.email;
-    req.session.first_name = user.first_name;
-    req.session.last_name = user.last_name;
-    req.session.age = user.age;
-    req.session.role = getRoleByUser(user);
+    const accessToken = generateAuthToken({
+      id: user._id,
+      email: user.email,
+      last_name: user.last_name,
+      first_name: user.first_name,
+      cid : user.cart?._id
+    });
+
+    res
+      .cookie("authToken", accessToken, { httpOnly: true })
+      .redirect("../../api/products/list");
 
     res.redirect('/')
 })

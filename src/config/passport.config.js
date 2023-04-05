@@ -101,7 +101,7 @@ passport.use(
         const user = await registerUser(newUser);
         done(null, user);
       } catch (error) {
-        done(error);
+        done(null, false, req.flash("registerMessage", error.message));
       }
     }
   )
