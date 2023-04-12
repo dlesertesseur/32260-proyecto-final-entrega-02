@@ -1,5 +1,5 @@
-import CategoryDao from "../dao/nomgoDb/category.dao.js";
-import categorySchema from "../dao/models/category.model.js";
+import CategoryDao from "../persistence/nomgoDb/category.dao.js";
+import categorySchema from "../models/category.model.js";
 
 const dao = new CategoryDao("categories", categorySchema);
 

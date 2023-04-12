@@ -7,6 +7,7 @@ import jwt from "passport-jwt";
 import { authenticate, registerUser } from "../services/auth.service.js";
 import { findByEmail } from "../services/user.service.js";
 import { createHash } from "../util/Crypt.js";
+import config from "./config.js";
 
 dotenv.config();
 
@@ -32,9 +33,9 @@ const initializePassport = () => {
     "github",
     new GithubStrategy(
       {
-        clientID: process.env.GITHUB_CLIENT_ID,
-        clientSecret: process.env.GITHUB_SECRET,
-        callbackURL: process.env.CALLBACK_URL,
+        clientID: config.GITHUB_CLIENT_ID,
+        clientSecret: config.GITHUB_SECRET,
+        callbackURL: config.CALLBACK_URL,
         scope: ["user:email"],
       },
       async (accessToken, refreshToken, profile, done) => {
@@ -75,7 +76,7 @@ const initializePassport = () => {
     new JWTStrategy(
       {
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-        secretOrKey: process.env.SESSION_SECRET,
+        secretOrKey: config.SESSION_SECRET,
       },
       async (jwt_payload, done) => {
         try {

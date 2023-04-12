@@ -1,5 +1,5 @@
-import userSchema from "../dao/models/user.model.js";
-import UserDao from "../dao/nomgoDb/user.dao.js";
+import userSchema from "../models/user.model.js";
+import UserDao from "../persistence/nomgoDb/user.dao.js";
 
 const dao = new UserDao("user", userSchema);
 

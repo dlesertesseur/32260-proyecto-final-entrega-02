@@ -1,5 +1,5 @@
-import ProductDao from "../dao/nomgoDb/product.dao.js";
-import productSchema from "../dao/models/product.model.js";
+import ProductDao from "../persistence/nomgoDb/product.dao.js";
+import productSchema from "../models/product.model.js";
 
 const dao = new ProductDao("products", productSchema);
 

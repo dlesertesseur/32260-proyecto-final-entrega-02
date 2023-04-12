@@ -1,5 +1,5 @@
-import CartDao from "../dao/nomgoDb/cart.dao.js";
-import cartSchema from "../dao/models/cart.model.js";
+import CartDao from "../persistence/nomgoDb/cart.dao.js";
+import cartSchema from "../models/cart.model.js";
 
 const cartDAO = new CartDao("carts", cartSchema);
 
