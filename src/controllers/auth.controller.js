@@ -44,12 +44,14 @@ const loginPassport = async (req, res) => {
 const register = async (req, res) => {
   try {
     const newUser = { ...req.body };
+
+    /*VALIDA EL SUPER USUARIO*/
+    newUser.role = getRoleByUser(newUser);
     newUser.password = createHash(newUser.password);
 
     await registerUser(newUser);
     res.redirect("/api/auth/login");
   } catch (error) {
-    //res.status(error.status).send({ message: error.message });
     res.render("register-error", { error });
   }
 };

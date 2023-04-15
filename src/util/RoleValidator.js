@@ -1,10 +1,12 @@
+import config from "../config/config.js";
+
 function getRoleByUser(user) {
   let role = null;
 
   try {
     if (
-      user.email === "adminCoder@coder.com" &&
-      user.password === "adminCod3r123"
+      user.email === config.ADMIN_EMAIL &&
+      user.password === config.ADMIN_PASSWORD
     ) {
       role = "admin";
     } else {

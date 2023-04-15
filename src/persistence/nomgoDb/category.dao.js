@@ -5,7 +5,7 @@ dotenv.config();
 
 mongoose.set("strictQuery", false);
 mongoose.connect(
-  process.env.MONGO_DB_CONNECTION,
+  process.env.MONGO_URL,
   { dbName: "ecommerce" },
   (error) => {
     if (error) {

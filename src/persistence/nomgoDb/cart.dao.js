@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 mongoose.set("strictQuery", false);
-mongoose.connect(process.env.MONGO_DB_CONNECTION, { dbName: "ecommerce" }, (error) => {
+mongoose.connect(process.env.MONGO_URL, { dbName: "ecommerce" }, (error) => {
   if (error) {
     console.log("Cannot connect to db");
     process.exit();

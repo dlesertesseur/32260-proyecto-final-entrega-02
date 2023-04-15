@@ -8,6 +8,7 @@ import { authenticate, registerUser } from "../services/auth.service.js";
 import { findByEmail } from "../services/user.service.js";
 import { createHash } from "../util/Crypt.js";
 import config from "./config.js";
+import { getRoleByUser } from "../util/RoleValidator.js";
 
 dotenv.config();
 
@@ -97,6 +98,8 @@ passport.use(
     async (req, username, password, done) => {
       try {
         const newUser = { ...req.body };
+
+        newUser.role = getRoleByUser(newUser);
         newUser.password = createHash(newUser.password);
 
         const user = await registerUser(newUser);

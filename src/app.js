@@ -15,7 +15,7 @@ import cookieParser from "cookie-parser"
 import config from './config/config.js';
 
 const mongoStore = MongoStore.create({
-  mongoUrl: config.MONGO_DB_CONNECTION,
+  mongoUrl: config.MONGO_URL,
   dbName: config.DB_NAME,
   mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
   ttl: 150
