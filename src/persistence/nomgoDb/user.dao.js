@@ -1,12 +1,10 @@
 import mongoose from "mongoose";
-import * as dotenv from "dotenv";
 import {isValidPassword} from "../../util/Crypt.js";
-
-dotenv.config();
+import config from "../../config/config.js";
 
 mongoose.set("strictQuery", false);
 mongoose.connect(
-  process.env.MONGO_URL,
+  config.MONGO_URL,
   { dbName: "ecommerce" },
   (error) => {
     if (error) {

@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
-import * as dotenv from "dotenv";
+import config from "../../config/config.js";
 
-dotenv.config();
 mongoose.set("strictQuery", false);
-mongoose.connect(process.env.MONGO_URL, { dbName: "ecommerce" }, (error) => {
+mongoose.connect(config.MONGO_URL, { dbName: "ecommerce" }, (error) => {
   if (error) {
     console.log("Cannot connect to db");
     process.exit();

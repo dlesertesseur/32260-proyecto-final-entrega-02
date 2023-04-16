@@ -1,4 +1,3 @@
-import * as dotenv from "dotenv";
 import passport from "passport";
 import GithubStrategy from "passport-github2";
 import local from "passport-local";
@@ -9,8 +8,6 @@ import { findByEmail } from "../services/user.service.js";
 import { createHash } from "../util/Crypt.js";
 import config from "./config.js";
 import { getRoleByUser } from "../util/RoleValidator.js";
-
-dotenv.config();
 
 const LocalStrategy = local.Strategy;
 const JWTStrategy = jwt.Strategy;

@@ -34,7 +34,7 @@ authRoute.get("/registerError", (req, res) => {
 
 authRoute.post(
   "/login",
-  passport.authenticate("local", { failureRedirect: "loginError" }),
+  passport.authenticate("local", { failureRedirect: "loginError", session:false }),
   loginPassport
 );
 
